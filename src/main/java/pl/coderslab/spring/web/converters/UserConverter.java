@@ -10,7 +10,7 @@ public class UserConverter implements Converter<String, User> {
     private UserRepository userRepository;
 
     @Autowired
-    public void setAuthorDao(UserRepository userRepository) {
+    public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

@@ -2,46 +2,53 @@ package pl.coderslab.spring.web.controler;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import pl.coderslab.spring.domain.model.Tweet;
+import pl.coderslab.spring.domain.model.User;
 import pl.coderslab.spring.domain.repositories.TweetRepository;
+import pl.coderslab.spring.domain.repositories.UserRepository;
 
+import javax.validation.Valid;
 import java.util.List;
 
+
 @Controller
+@RequestMapping("/")
 public class HomeController {
 
-    TweetRepository tweetRepository;
+    private TweetRepository tweetRepository;
+    private UserRepository userRepository;
 
-    public HomeController(TweetRepository tweetRepository) {
+    public HomeController(TweetRepository tweetRepository, UserRepository userRepository) {
         this.tweetRepository = tweetRepository;
+        this.userRepository = userRepository;
+    }
+
+    @ModelAttribute("allTweets")
+    public List<Tweet> allTweets() {
+        return tweetRepository.findAllOrderByCreatedDesc();
     }
 
     @GetMapping
-    public String prepareHomePage() {
-        return "index";
+    public String prepareHomePage(Model model) {
+        model.addAttribute("newTweet", new Tweet());
+        return "homepage";
     }
 
-    @GetMapping("/user/{id:[1-9][0-9]*}/tweets")
-    public String prepareTweets1(@PathVariable Long id, Model model) {
-        List<Tweet> tweets = tweetRepository.findAllByUserId(id);
-        if (tweets == null) {
-            return "Nie znaleziono tweetow";
+    @PostMapping
+    public String addTweet(@ModelAttribute("newTweet") @Valid Tweet tweet, BindingResult result,
+                           @SessionAttribute(name="user", required = false) User user) {
+        if (result.hasErrors()) {
+            return "homepage";
         }
-        model.addAttribute("tweets", tweets);
-        return "tweets";
-    }
-
-    @GetMapping("/user/search-tweets")
-    public String prepareTweets2(String phrase, Model model) {
-        List<Tweet> tweets = tweetRepository.findAllStartingWith(phrase);
-        if (tweets == null) {
-            return "Nie znaleziono tweetow";
+        if (user == null) {
+            result.rejectValue("text", null, "Zaloguj się, aby dodać tweet'a");
+            return "homepage";
         }
-        model.addAttribute("tweets", tweets);
-        return "tweets";
+        tweet.setUser(user);
+        tweetRepository.save(tweet);
+        return "redirect:/";
     }
 
 
