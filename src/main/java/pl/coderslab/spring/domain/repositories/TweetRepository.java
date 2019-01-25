@@ -17,8 +17,6 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
 
     List<Tweet> findAllByUserId(Long id);
 
-    @Query("SELECT t FROM Tweet t WHERE t.tweetText LIKE ?1%")
-    List<Tweet> findAllStartingWith(String phrase);
-
-
+    @Query("SELECT t FROM Tweet t ORDER BY t.created DESC ")
+    List<Tweet> findAllOrderByCreatedDesc();
 }
