@@ -9,28 +9,27 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tweets")
-public class Tweet {
+@Table(name = "comments")
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(max = 140)
+    @Size(max = 60)
     @NotNull
     @NotBlank
     private String text;
 
     private LocalDateTime created;
 
-    @PrePersist
-    void prePersist() {
-        this.created = LocalDateTime.now();
-    }
-
     @ManyToOne
     private User user;
 
+    @PrePersist
+    void prePresist(){
+        this.created = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;
@@ -40,13 +39,12 @@ public class Tweet {
         this.id = id;
     }
 
-
     public String getText() {
         return text;
     }
 
-    public void setText(String tweetText) {
-        this.text = tweetText;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public LocalDateTime getCreated() {
@@ -69,8 +67,8 @@ public class Tweet {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Tweet that = (Tweet) o;
-        return Objects.equals(id, that.id);
+        Comment comment = (Comment) o;
+        return Objects.equals(id, comment.id);
     }
 
     @Override
@@ -82,9 +80,11 @@ public class Tweet {
     public String toString() {
         return "Tweet{" +
                 "id=" + id +
-                ", tweetText='" + text + '\'' +
+                ", text='" + text + '\'' +
                 ", created=" + created +
                 ", user=" + user.getUsername() +
                 '}';
     }
+
+
 }

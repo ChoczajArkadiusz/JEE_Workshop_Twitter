@@ -1,24 +1,18 @@
 package pl.coderslab.spring.domain.model;
 
-import com.sun.istack.NotNull;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tweets")
-public class Tweet {
+@Table(name = "messages")
+public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(max = 140)
-    @NotNull
-    @NotBlank
     private String text;
 
     private LocalDateTime created;
@@ -28,9 +22,13 @@ public class Tweet {
         this.created = LocalDateTime.now();
     }
 
-    @ManyToOne
-    private User user;
+    private Boolean opened = false;
 
+    @ManyToOne
+    private User sender;
+
+    @ManyToOne
+    private User receiver;
 
     public Long getId() {
         return id;
@@ -40,13 +38,12 @@ public class Tweet {
         this.id = id;
     }
 
-
     public String getText() {
         return text;
     }
 
-    public void setText(String tweetText) {
-        this.text = tweetText;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public LocalDateTime getCreated() {
@@ -57,20 +54,36 @@ public class Tweet {
         this.created = created;
     }
 
-    public User getUser() {
-        return user;
+    public Boolean getOpened() {
+        return opened;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setOpened(Boolean readed) {
+        this.opened = readed;
+    }
+
+    public User getSender() {
+        return sender;
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
+    }
+
+    public User getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(User receiver) {
+        this.receiver = receiver;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Tweet that = (Tweet) o;
-        return Objects.equals(id, that.id);
+        Message message = (Message) o;
+        return Objects.equals(id, message.id);
     }
 
     @Override
@@ -80,11 +93,13 @@ public class Tweet {
 
     @Override
     public String toString() {
-        return "Tweet{" +
+        return "Message{" +
                 "id=" + id +
-                ", tweetText='" + text + '\'' +
+                ", text='" + text + '\'' +
                 ", created=" + created +
-                ", user=" + user.getUsername() +
+                ", opened=" + opened +
+                ", sender=" + sender.getUsername() +
+                ", receiver=" + receiver.getUsername() +
                 '}';
     }
 }
