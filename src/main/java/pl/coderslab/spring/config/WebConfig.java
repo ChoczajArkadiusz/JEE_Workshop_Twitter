@@ -8,6 +8,8 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalEntityManagerFactoryBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.ViewResolver;
@@ -21,7 +23,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.validation.Validator;
 
 @Configuration
-@ComponentScan(basePackages = {"pl.coderslab.spring.web", "pl.coderslab.spring.domain.dao"})
+@ComponentScan(basePackages = "pl.coderslab.spring.web")
 @EnableWebMvc
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "pl.coderslab.spring.domain.repositories")
@@ -62,6 +64,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public UserConverter userConverter() {
         return new UserConverter();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 
