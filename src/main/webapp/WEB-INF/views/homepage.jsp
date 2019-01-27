@@ -34,7 +34,7 @@
     <hr>
     <c:forEach items="${allTweets}" var="tweet" varStatus="stat">
         <div>
-            <h4>[${tweet.created}] @${tweet.user.username} </h4>
+            <h4>[${tweet.created}] <a href="/users/${tweet.user.id}" methods="POST"><strong>@${tweet.user.username}</strong></a></h4>
             <p>${tweet.text}</p>
         </div>
         <hr size="1">
